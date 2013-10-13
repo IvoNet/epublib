@@ -36,14 +36,14 @@ import java.io.InputStream;
  * @author Stephen Colebourne
  * @version $Id: ProxyInputStream.java 934041 2010-04-14 17:37:24Z jukka $
  */
-public abstract class ProxyInputStream extends FilterInputStream {
+abstract class ProxyInputStream extends FilterInputStream {
 
     /**
      * Constructs a new ProxyInputStream.
      *
      * @param proxy  the InputStream to delegate to
      */
-    public ProxyInputStream(InputStream proxy) {
+    ProxyInputStream(final InputStream proxy) {
         super(proxy);
         // the proxy is stored in a protected superclass variable named 'in'
     }
@@ -57,8 +57,8 @@ public abstract class ProxyInputStream extends FilterInputStream {
     public int read() throws IOException {
         try {
             beforeRead(1);
-            int b = in.read();
-            afterRead(b != -1 ? 1 : -1);
+            final int b = this.in.read();
+            afterRead((b != -1) ? 1 : -1);
             return b;
         } catch (IOException e) {
             handleIOException(e);
@@ -73,10 +73,10 @@ public abstract class ProxyInputStream extends FilterInputStream {
      * @throws IOException if an I/O error occurs
      */
     @Override
-    public int read(byte[] bts) throws IOException {
+    public int read(final byte[] bts) throws IOException {
         try {
-            beforeRead(bts != null ? bts.length : 0);
-            int n = in.read(bts);
+            beforeRead((bts != null) ? bts.length : 0);
+            final int n = this.in.read(bts);
             afterRead(n);
             return n;
         } catch (IOException e) {
@@ -94,10 +94,10 @@ public abstract class ProxyInputStream extends FilterInputStream {
      * @throws IOException if an I/O error occurs
      */
     @Override
-    public int read(byte[] bts, int off, int len) throws IOException {
+    public int read(final byte[] bts, final int off, final int len) throws IOException {
         try {
             beforeRead(len);
-            int n = in.read(bts, off, len);
+            final int n = this.in.read(bts, off, len);
             afterRead(n);
             return n;
         } catch (IOException e) {
@@ -113,9 +113,9 @@ public abstract class ProxyInputStream extends FilterInputStream {
      * @throws IOException if an I/O error occurs
      */
     @Override
-    public long skip(long ln) throws IOException {
+    public long skip(final long ln) throws IOException {
         try {
-            return in.skip(ln);
+            return this.in.skip(ln);
         } catch (IOException e) {
             handleIOException(e);
             return 0;
@@ -144,7 +144,7 @@ public abstract class ProxyInputStream extends FilterInputStream {
     @Override
     public void close() throws IOException {
         try {
-            in.close();
+            this.in.close();
         } catch (IOException e) {
             handleIOException(e);
         }
@@ -155,8 +155,8 @@ public abstract class ProxyInputStream extends FilterInputStream {
      * @param readlimit read ahead limit
      */
     @Override
-    public synchronized void mark(int readlimit) {
-        in.mark(readlimit);
+    public synchronized void mark(final int readlimit) {
+        this.in.mark(readlimit);
     }
 
     /**
@@ -166,7 +166,7 @@ public abstract class ProxyInputStream extends FilterInputStream {
     @Override
     public synchronized void reset() throws IOException {
         try {
-            in.reset();
+            this.in.reset();
         } catch (IOException e) {
             handleIOException(e);
         }
@@ -178,7 +178,7 @@ public abstract class ProxyInputStream extends FilterInputStream {
      */
     @Override
     public boolean markSupported() {
-        return in.markSupported();
+        return this.in.markSupported();
     }
 
     /**
@@ -199,7 +199,7 @@ public abstract class ProxyInputStream extends FilterInputStream {
      * @param n number of bytes that the caller asked to be read
      * @throws IOException if the pre-processing fails
      */
-    protected void beforeRead(int n) throws IOException {
+    void beforeRead(final int n) throws IOException {
     }
 
     /**
@@ -219,7 +219,7 @@ public abstract class ProxyInputStream extends FilterInputStream {
      * @param n number of bytes read, or -1 if the end of stream was reached
      * @throws IOException if the post-processing fails
      */
-    protected void afterRead(int n) throws IOException {
+    protected void afterRead(final int n) throws IOException {
     }
 
     /**
@@ -231,7 +231,7 @@ public abstract class ProxyInputStream extends FilterInputStream {
      * @throws IOException if an I/O error occurs
      * @since Commons IO 2.0
      */
-    protected void handleIOException(IOException e) throws IOException {
+    void handleIOException(final IOException e) throws IOException {
         throw e;
     }
 

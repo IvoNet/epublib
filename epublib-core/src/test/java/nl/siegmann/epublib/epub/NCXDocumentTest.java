@@ -1,61 +1,44 @@
 package nl.siegmann.epublib.epub;
 
-import static org.junit.Assert.assertEquals;
+import nl.siegmann.epublib.domain.Book;
+import nl.siegmann.epublib.domain.Resource;
+import nl.siegmann.epublib.service.MediatypeService;
+import nl.siegmann.epublib.util.IOUtil;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 
-import nl.siegmann.epublib.domain.Book;
-import nl.siegmann.epublib.domain.Resource;
-import nl.siegmann.epublib.service.MediatypeService;
-import nl.siegmann.epublib.util.IOUtil;
-
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
 
 public class NCXDocumentTest {
 
-    byte[] ncxData;
+    private byte[] ncxData;
 
-    public NCXDocumentTest() {
-    }
-
-    @BeforeClass
-    public static void setUpClass() {
-    }
-
-    @AfterClass
-    public static void tearDownClass() {
-    }
 
     @Before
     public void setUp() throws IOException {
-        ncxData = IOUtil.toByteArray(new FileInputStream(new File("src/test/resources/toc.xml")));
+        this.ncxData = IOUtil.toByteArray(new FileInputStream(new File("src/test/resources/toc.xml")));
     }
 
-    @After
-    public void tearDown() {
-    }
-
-    private void addResource(Book book, String filename) {
-        Resource chapterResource = new Resource("id1", "Hello, world !".getBytes(), filename, MediatypeService.XHTML);
+    private void addResource(final Book book, final String filename) {
+        final Resource chapterResource = new Resource("id1", "Hello, world !"
+                .getBytes(), filename, MediatypeService.XHTML);
         book.addResource(chapterResource);
         book.getSpine().addResource(chapterResource);
     }
-    
+
     /**
      * Test of read method, of class NCXDocument.
      */
     @Test
     public void testReadWithNonRootLevelTOC() {
-        
+
         // If the tox.ncx file is not in the root, the hrefs it refers to need to preserve its path.
-        Book book = new Book();
-        Resource ncxResource = new Resource(ncxData, "xhtml/toc.ncx");
+        final Book book = new Book();
+        final Resource ncxResource = new Resource(this.ncxData, "xhtml/toc.ncx");
         addResource(book, "xhtml/chapter1.html");
         addResource(book, "xhtml/chapter2.html");
         addResource(book, "xhtml/chapter2_1.html");

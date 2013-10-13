@@ -33,7 +33,7 @@ public class ByteOrderMark implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /** UTF-8 BOM */
-    public static final ByteOrderMark UTF_8    = new ByteOrderMark("UTF-8",    0xEF, 0xBB, 0xBF);
+    public static final ByteOrderMark UTF_8 = new ByteOrderMark("UTF-8", 0xEF, 0xBB, 0xBF);
     /** UTF-16BE BOM (Big Endian) */
     public static final ByteOrderMark UTF_16BE = new ByteOrderMark("UTF-16BE", 0xFE, 0xFF);
     /** UTF-16LE BOM (Little Endian) */
@@ -52,11 +52,11 @@ public class ByteOrderMark implements Serializable {
      * @throws IllegalArgumentException if the bytes are null or zero
      * length
      */
-    public ByteOrderMark(String charsetName, int... bytes) {
-        if (charsetName == null || charsetName.length() == 0) {
+    public ByteOrderMark(final String charsetName, final int... bytes) {
+        if ((charsetName == null) || charsetName.isEmpty()) {
             throw new IllegalArgumentException("No charsetName specified");
         }
-        if (bytes == null || bytes.length == 0) {
+        if ((bytes == null) || (bytes.length == 0)) {
             throw new IllegalArgumentException("No bytes specified");
         }
         this.charsetName = charsetName;
@@ -70,7 +70,7 @@ public class ByteOrderMark implements Serializable {
      * @return the character set name
      */
     public String getCharsetName() {
-        return charsetName;
+        return this.charsetName;
     }
 
     /**
@@ -79,7 +79,7 @@ public class ByteOrderMark implements Serializable {
      * @return the length of the BOM's bytes
      */
     public int length() {
-        return bytes.length;
+        return this.bytes.length;
     }
 
     /**
@@ -88,8 +88,8 @@ public class ByteOrderMark implements Serializable {
      * @param pos The position
      * @return The specified byte
      */
-    public int get(int pos) {
-        return bytes[pos];
+    public int get(final int pos) {
+        return this.bytes[pos];
     }
 
     /**
@@ -98,9 +98,9 @@ public class ByteOrderMark implements Serializable {
      * @return a copy of the BOM's bytes
      */
     public byte[] getBytes() {
-        byte[] copy = new byte[bytes.length];
-        for (int i = 0; i < bytes.length; i++) {
-            copy[i] = (byte)bytes[i];
+        final byte[] copy = new byte[this.bytes.length];
+        for (int i = 0; i < this.bytes.length; i++) {
+            copy[i] = (byte) this.bytes[i];
         }
         return copy;
     }
@@ -113,16 +113,16 @@ public class ByteOrderMark implements Serializable {
      * false
      */
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         if (!(obj instanceof ByteOrderMark)) {
             return false;
         }
-        ByteOrderMark bom = (ByteOrderMark)obj;
-        if (bytes.length != bom.length()) {
+        final ByteOrderMark bom = (ByteOrderMark) obj;
+        if (this.bytes.length != bom.length()) {
             return false;
         }
-        for (int i = 0; i < bytes.length; i++) {
-            if (bytes[i] != bom.get(i)) {
+        for (int i = 0; i < this.bytes.length; i++) {
+            if (this.bytes[i] != bom.get(i)) {
                 return false;
             }
         }
@@ -138,7 +138,7 @@ public class ByteOrderMark implements Serializable {
     @Override
     public int hashCode() {
         int hashCode = getClass().hashCode();
-        for (int b : bytes) {
+        for (final int b : this.bytes) {
             hashCode += b;
         }
         return hashCode;
@@ -151,17 +151,17 @@ public class ByteOrderMark implements Serializable {
      */
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder();
+        final StringBuilder builder = new StringBuilder();
         builder.append(getClass().getSimpleName());
         builder.append('[');
-        builder.append(charsetName);
+        builder.append(this.charsetName);
         builder.append(": ");
-        for (int i = 0; i < bytes.length; i++) {
+        for (int i = 0; i < this.bytes.length; i++) {
             if (i > 0) {
                 builder.append(",");
             }
             builder.append("0x");
-            builder.append(Integer.toHexString(0xFF & bytes[i]).toUpperCase());
+            builder.append(Integer.toHexString(0xFF & this.bytes[i]).toUpperCase());
         }
         builder.append(']');
         return builder.toString();

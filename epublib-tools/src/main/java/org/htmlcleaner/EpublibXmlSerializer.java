@@ -8,42 +8,45 @@ import java.util.Set;
 import java.util.TreeSet;
 
 public class EpublibXmlSerializer extends SimpleXmlSerializer {
-	private String outputEncoding;
-	
-	public EpublibXmlSerializer(CleanerProperties paramCleanerProperties, String outputEncoding) {
-		super(paramCleanerProperties);
-		this.outputEncoding = outputEncoding;
-	}
+    private final String outputEncoding;
 
-	protected String escapeXml(String xmlContent) {
-		return xmlContent;
+    public EpublibXmlSerializer(final CleanerProperties paramCleanerProperties, final String outputEncoding) {
+        super(paramCleanerProperties);
+        this.outputEncoding = outputEncoding;
     }
 
-	/**
-	 * Differs from the super.serializeOpenTag in that it:
-	 * <ul>
-	 * <li>skips the xmlns:xml="xml" attribute</li>
-	 * <li>if the tagNode is a meta tag setting the contentType then it sets the encoding to the actual encoding</li>
-	 * </ul>
-	 */
-    protected void serializeOpenTag(TagNode tagNode, Writer writer, boolean newLine) throws IOException {
+    @Override
+    protected String escapeXml(final String xmlContent) {
+        return xmlContent;
+    }
+
+    /**
+     * Differs from the super.serializeOpenTag in that it:
+     * <ul>
+     * <li>skips the xmlns:xml="xml" attribute</li>
+     * <li>if the tagNode is a meta tag setting the contentType then it sets the encoding to the actual encoding</li>
+     * </ul>
+     */
+    @Override
+    protected void serializeOpenTag(final TagNode tagNode, final Writer writer, final boolean newLine)
+            throws IOException {
         String tagName = tagNode.getName();
 
         if (Utils.isEmptyString(tagName)) {
             return;
         }
-        
-        boolean nsAware = props.isNamespacesAware();
+
+        final boolean nsAware = this.props.isNamespacesAware();
 
         Set<String> definedNSPrefixes = null;
         Set<String> additionalNSDeclNeeded = null;
 
-        String tagPrefix = Utils.getXmlNSPrefix(tagName);
+        final String tagPrefix = Utils.getXmlNSPrefix(tagName);
         if (tagPrefix != null) {
             if (nsAware) {
                 definedNSPrefixes = new HashSet<String>();
                 tagNode.collectNamespacePrefixesOnPath(definedNSPrefixes);
-                if ( !definedNSPrefixes.contains(tagPrefix) ) {
+                if (!definedNSPrefixes.contains(tagPrefix)) {
                     additionalNSDeclNeeded = new TreeSet<String>();
                     additionalNSDeclNeeded.add(tagPrefix);
                 }
@@ -55,13 +58,13 @@ public class EpublibXmlSerializer extends SimpleXmlSerializer {
         writer.write("<" + tagName);
 
         if (isMetaContentTypeTag(tagNode)) {
-			tagNode.setAttribute("content", "text/html; charset=" + outputEncoding);
+            tagNode.setAttribute("content", "text/html; charset=" + this.outputEncoding);
         }
-        
+
         // write attributes
-        for (Map.Entry<String, String> entry: tagNode.getAttributes().entrySet()) {
+        for (final Map.Entry<String, String> entry : tagNode.getAttributes().entrySet()) {
             String attName = entry.getKey();
-            String attPrefix = Utils.getXmlNSPrefix(attName);
+            final String attPrefix = Utils.getXmlNSPrefix(attName);
             if (attPrefix != null) {
                 if (nsAware) {
                     // collect used namespace prefixes in attributes in order to explicitly define
@@ -70,7 +73,7 @@ public class EpublibXmlSerializer extends SimpleXmlSerializer {
                         definedNSPrefixes = new HashSet<String>();
                         tagNode.collectNamespacePrefixesOnPath(definedNSPrefixes);
                     }
-                    if ( !definedNSPrefixes.contains(attPrefix) ) {
+                    if (!definedNSPrefixes.contains(attPrefix)) {
                         if (additionalNSDeclNeeded == null) {
                             additionalNSDeclNeeded = new TreeSet<String>();
                         }
@@ -85,13 +88,13 @@ public class EpublibXmlSerializer extends SimpleXmlSerializer {
 
         // write namespace declarations 
         if (nsAware) {
-            Map<String, String> nsDeclarations = tagNode.getNamespaceDeclarations();
+            final Map<String, String> nsDeclarations = tagNode.getNamespaceDeclarations();
             if (nsDeclarations != null) {
-                for (Map.Entry<String, String> entry: nsDeclarations.entrySet()) {
-                    String prefix = entry.getKey();
+                for (final Map.Entry<String, String> entry : nsDeclarations.entrySet()) {
+                    final String prefix = entry.getKey();
                     String att = "xmlns";
-                    if (prefix.length() > 0) {
-                         att += ":" + prefix;
+                    if (!prefix.isEmpty()) {
+                        att += ":" + prefix;
                     }
                     writer.write(" " + att + "=\"" + escapeXml(entry.getValue()) + "\"");
                 }
@@ -100,16 +103,16 @@ public class EpublibXmlSerializer extends SimpleXmlSerializer {
 
         // write additional namespace declarations needed for this tag in order xml to be well-formed
         if (additionalNSDeclNeeded != null) {
-            for (String prefix: additionalNSDeclNeeded) {
-            	// skip the xmlns:xml="xml" attribute
-            	if (prefix.equalsIgnoreCase("xml")) {
-            		continue;
-            	}
+            for (final String prefix : additionalNSDeclNeeded) {
+                // skip the xmlns:xml="xml" attribute
+                if ("xml".equalsIgnoreCase(prefix)) {
+                    continue;
+                }
                 writer.write(" xmlns:" + prefix + "=\"" + prefix + "\"");
             }
         }
 
-        if ( isMinimizedTagSyntax(tagNode) ) {
+        if (isMinimizedTagSyntax(tagNode)) {
             writer.write(" />");
             if (newLine) {
                 writer.write("\n");
@@ -121,8 +124,8 @@ public class EpublibXmlSerializer extends SimpleXmlSerializer {
         }
     }
 
-	private boolean isMetaContentTypeTag(TagNode tagNode) {
-		return tagNode.getName().equalsIgnoreCase("meta")
-		&& "Content-Type".equalsIgnoreCase(tagNode.getAttributeByName("http-equiv"));
-	}
+    private boolean isMetaContentTypeTag(final TagNode tagNode) {
+        return "meta".equalsIgnoreCase(tagNode.getName())
+               && "Content-Type".equalsIgnoreCase(tagNode.getAttributeByName("http-equiv"));
+    }
 }

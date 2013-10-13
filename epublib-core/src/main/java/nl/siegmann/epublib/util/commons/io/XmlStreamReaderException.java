@@ -58,8 +58,8 @@ public class XmlStreamReaderException extends IOException {
      * @param xmlGuessEnc XML guess encoding.
      * @param xmlEnc XML prolog encoding.
      */
-    public XmlStreamReaderException(String msg, String bomEnc,
-            String xmlGuessEnc, String xmlEnc) {
+    public XmlStreamReaderException(final String msg, final String bomEnc,
+                                    final String xmlGuessEnc, final String xmlEnc) {
         this(msg, null, null, bomEnc, xmlGuessEnc, xmlEnc);
     }
 
@@ -76,14 +76,14 @@ public class XmlStreamReaderException extends IOException {
      * @param xmlGuessEnc XML guess encoding.
      * @param xmlEnc XML prolog encoding.
      */
-    public XmlStreamReaderException(String msg, String ctMime, String ctEnc,
-            String bomEnc, String xmlGuessEnc, String xmlEnc) {
+    public XmlStreamReaderException(final String msg, final String ctMime, final String ctEnc,
+                                    final String bomEnc, final String xmlGuessEnc, final String xmlEnc) {
         super(msg);
-        contentTypeMime = ctMime;
-        contentTypeEncoding = ctEnc;
-        bomEncoding = bomEnc;
-        xmlGuessEncoding = xmlGuessEnc;
-        xmlEncoding = xmlEnc;
+        this.contentTypeMime = ctMime;
+        this.contentTypeEncoding = ctEnc;
+        this.bomEncoding = bomEnc;
+        this.xmlGuessEncoding = xmlGuessEnc;
+        this.xmlEncoding = xmlEnc;
     }
 
     /**
@@ -92,7 +92,7 @@ public class XmlStreamReaderException extends IOException {
      * @return the BOM encoding, null if none.
      */
     public String getBomEncoding() {
-        return bomEncoding;
+        return this.bomEncoding;
     }
 
     /**
@@ -101,7 +101,7 @@ public class XmlStreamReaderException extends IOException {
      * @return the encoding guess, null if it couldn't be guessed.
      */
     public String getXmlGuessEncoding() {
-        return xmlGuessEncoding;
+        return this.xmlGuessEncoding;
     }
 
     /**
@@ -110,7 +110,7 @@ public class XmlStreamReaderException extends IOException {
      * @return the encoding of the XML prolog, null if none.
      */
     public String getXmlEncoding() {
-        return xmlEncoding;
+        return this.xmlEncoding;
     }
 
     /**
@@ -121,7 +121,7 @@ public class XmlStreamReaderException extends IOException {
      *         content-type or the encoding detection did not involve HTTP.
      */
     public String getContentTypeMime() {
-        return contentTypeMime;
+        return this.contentTypeMime;
     }
 
     /**
@@ -133,6 +133,6 @@ public class XmlStreamReaderException extends IOException {
      *         involve HTTP.
      */
     public String getContentTypeEncoding() {
-        return contentTypeEncoding;
+        return this.contentTypeEncoding;
     }
 }

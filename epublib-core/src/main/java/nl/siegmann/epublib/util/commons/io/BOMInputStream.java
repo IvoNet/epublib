@@ -85,7 +85,7 @@ public class BOMInputStream extends ProxyInputStream {
      * a {@link ByteOrderMark#UTF_8} BOM.
      * @param delegate the InputStream to delegate to
      */
-    public BOMInputStream(InputStream delegate) {
+    public BOMInputStream(final InputStream delegate) {
         this(delegate, false, ByteOrderMark.UTF_8);
     }
 
@@ -96,7 +96,7 @@ public class BOMInputStream extends ProxyInputStream {
      * @param include true to include the UTF-8 BOM or
      * false to exclude it
      */
-    public BOMInputStream(InputStream delegate, boolean include) {
+    public BOMInputStream(final InputStream delegate, final boolean include) {
         this(delegate, include, ByteOrderMark.UTF_8);
     }
 
@@ -106,7 +106,7 @@ public class BOMInputStream extends ProxyInputStream {
      * @param delegate the InputStream to delegate to
      * @param boms The BOMs to detect and exclude
      */
-    public BOMInputStream(InputStream delegate, ByteOrderMark... boms) {
+    public BOMInputStream(final InputStream delegate, final ByteOrderMark... boms) {
         this(delegate, false, boms);
     }
 
@@ -118,9 +118,9 @@ public class BOMInputStream extends ProxyInputStream {
      * false to exclude them
      * @param boms The BOMs to detect and optionally exclude
      */
-    public BOMInputStream(InputStream delegate, boolean include, ByteOrderMark... boms) {
+    public BOMInputStream(final InputStream delegate, final boolean include, final ByteOrderMark... boms) {
         super(delegate);
-        if (boms == null || boms.length == 0) {
+        if ((boms == null) || (boms.length == 0)) {
             throw new IllegalArgumentException("No BOMs specified");
         }
         this.include = include;
@@ -148,11 +148,11 @@ public class BOMInputStream extends ProxyInputStream {
      * is configured to detect
      * @throws IOException if an error reading the first bytes of the stream occurs
      */
-    public boolean hasBOM(ByteOrderMark bom) throws IOException {
-        if (!boms.contains(bom)) {
+    public boolean hasBOM(final ByteOrderMark bom) throws IOException {
+        if (!this.boms.contains(bom)) {
             throw new IllegalArgumentException("Stream not configure to detect " + bom);
         }
-        return (byteOrderMark != null && getBOM().equals(bom));
+        return ((this.byteOrderMark != null) && getBOM().equals(bom));
     }
 
     /**
@@ -161,30 +161,30 @@ public class BOMInputStream extends ProxyInputStream {
      * @return The BOM or null if none
      * @throws IOException if an error reading the first bytes of the stream occurs
      */
-    public ByteOrderMark getBOM() throws IOException {
-        if (firstBytes == null) {
+    ByteOrderMark getBOM() throws IOException {
+        if (this.firstBytes == null) {
             int max = 0;
-            for (ByteOrderMark bom : boms) {
+            for (final ByteOrderMark bom : this.boms) {
                 max = Math.max(max, bom.length());
             }
-            firstBytes = new int[max];
-            for (int i = 0; i < firstBytes.length; i++) {
-                firstBytes[i] = in.read();
-                fbLength++;
-                if (firstBytes[i] < 0) {
+            this.firstBytes = new int[max];
+            for (int i = 0; i < this.firstBytes.length; i++) {
+                this.firstBytes[i] = this.in.read();
+                this.fbLength++;
+                if (this.firstBytes[i] < 0) {
                     break;
                 }
 
-                byteOrderMark = find();
-                if (byteOrderMark != null) {
-                    if (!include) {
-                        fbLength = 0;
+                this.byteOrderMark = find();
+                if (this.byteOrderMark != null) {
+                    if (!this.include) {
+                        this.fbLength = 0;
                     }
                     break;
                 }
             }
         }
-        return byteOrderMark;
+        return this.byteOrderMark;
     }
 
     /**
@@ -192,11 +192,11 @@ public class BOMInputStream extends ProxyInputStream {
      *
      * @return The BOM charset Name or null if no BOM found
      * @throws IOException if an error reading the first bytes of the stream occurs
-     * 
+     *
      */
     public String getBOMCharsetName() throws IOException {
         getBOM();
-        return (byteOrderMark == null ? null : byteOrderMark.getCharsetName());
+        return ((this.byteOrderMark == null) ? null : this.byteOrderMark.getCharsetName());
     }
 
     /**
@@ -209,7 +209,7 @@ public class BOMInputStream extends ProxyInputStream {
      */
     private int readFirstBytes() throws IOException {
         getBOM();
-        return (fbIndex < fbLength) ? firstBytes[fbIndex++] : -1;
+        return (this.fbIndex < this.fbLength) ? this.firstBytes[this.fbIndex++] : -1;
     }
 
     /**
@@ -218,7 +218,7 @@ public class BOMInputStream extends ProxyInputStream {
      * @return The matched BOM or null if none matched
      */
     private ByteOrderMark find() {
-        for (ByteOrderMark bom : boms) {
+        for (final ByteOrderMark bom : this.boms) {
             if (matches(bom)) {
                 return bom;
             }
@@ -232,12 +232,12 @@ public class BOMInputStream extends ProxyInputStream {
      * @param bom The BOM
      * @return true if the bytes match the bom, otherwise false
      */
-    private boolean matches(ByteOrderMark bom) {
-        if (bom.length() != fbLength) {
+    private boolean matches(final ByteOrderMark bom) {
+        if (bom.length() != this.fbLength) {
             return false;
         }
         for (int i = 0; i < bom.length(); i++) {
-            if (bom.get(i) != firstBytes[i]) {
+            if (bom.get(i) != this.firstBytes[i]) {
                 return false;
             }
         }
@@ -256,8 +256,8 @@ public class BOMInputStream extends ProxyInputStream {
      */
     @Override
     public int read() throws IOException {
-        int b = readFirstBytes();
-        return (b >= 0) ? b : in.read();
+        final int b = readFirstBytes();
+        return (b >= 0) ? b : this.in.read();
     }
 
     /**
@@ -270,7 +270,7 @@ public class BOMInputStream extends ProxyInputStream {
      * @throws IOException if an I/O error occurs
      */
     @Override
-    public int read(byte[] buf, int off, int len) throws IOException {
+    public int read(final byte[] buf, int off, int len) throws IOException {
         int firstCount = 0;
         int b = 0;
         while ((len > 0) && (b >= 0)) {
@@ -281,8 +281,12 @@ public class BOMInputStream extends ProxyInputStream {
                 firstCount++;
             }
         }
-        int secondCount = in.read(buf, off, len);
-        return (secondCount < 0) ? (firstCount > 0 ? firstCount : -1) : firstCount + secondCount;
+        final int secondCount = this.in.read(buf, off, len);
+        if (secondCount < 0) {
+            return (firstCount > 0) ? firstCount : -1;
+        } else {
+            return (firstCount + secondCount);
+        }
     }
 
     /**
@@ -294,7 +298,7 @@ public class BOMInputStream extends ProxyInputStream {
      * @throws IOException if an I/O error occurs
      */
     @Override
-    public int read(byte[] buf) throws IOException {
+    public int read(final byte[] buf) throws IOException {
         return read(buf, 0, buf.length);
     }
 
@@ -303,10 +307,10 @@ public class BOMInputStream extends ProxyInputStream {
      * @param readlimit read ahead limit
      */
     @Override
-    public synchronized void mark(int readlimit) {
-        markFbIndex = fbIndex;
-        markedAtStart = (firstBytes == null);
-        in.mark(readlimit);
+    public synchronized void mark(final int readlimit) {
+        this.markFbIndex = this.fbIndex;
+        this.markedAtStart = (this.firstBytes == null);
+        this.in.mark(readlimit);
     }
 
     /**
@@ -315,12 +319,12 @@ public class BOMInputStream extends ProxyInputStream {
      */
     @Override
     public synchronized void reset() throws IOException {
-        fbIndex = markFbIndex;
-        if (markedAtStart) {
-            firstBytes = null;
+        this.fbIndex = this.markFbIndex;
+        if (this.markedAtStart) {
+            this.firstBytes = null;
         }
 
-        in.reset();
+        this.in.reset();
     }
 
     /**
@@ -335,6 +339,6 @@ public class BOMInputStream extends ProxyInputStream {
         while ((n > 0) && (readFirstBytes() >= 0)) {
             n--;
         }
-        return in.skip(n);
+        return this.in.skip(n);
     }
 }

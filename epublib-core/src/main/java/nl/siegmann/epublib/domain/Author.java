@@ -1,80 +1,83 @@
 package nl.siegmann.epublib.domain;
 
-import java.io.Serializable;
-
 import nl.siegmann.epublib.util.StringUtil;
+
+import java.io.Serializable;
 
 /**
  * Represents one of the authors of the book
- * 
+ *
  * @author paul
  *
  */
 public class Author implements Serializable {
-	
-	private static final long serialVersionUID = 6663408501416574200L;
-	
-	private String firstname;
-	private String lastname;
-	private Relator relator = Relator.AUTHOR;
-	
-	public Author(String singleName) {
-		this("", singleName);
-	}
-	
-	
-	public Author(String firstname, String lastname) {
-		this.firstname = firstname;
-		this.lastname = lastname;
-	}
-	
-	public String getFirstname() {
-		return firstname;
-	}
-	public void setFirstname(String firstname) {
-		this.firstname = firstname;
-	}
-	public String getLastname() {
-		return lastname;
-	}
-	public void setLastname(String lastname) {
-		this.lastname = lastname;
-	}
-	
-	public String toString() {
-		return lastname + ", " + firstname;
-	}
-	
-	public int hashCode() {
-		return StringUtil.hashCode(firstname, lastname);
-	}
-	
-	
-	public boolean equals(Object authorObject) {
-		if(! (authorObject instanceof Author)) {
-			return false;
-		}
-		Author other = (Author) authorObject;
-		return StringUtil.equals(firstname, other.firstname)
-		 && StringUtil.equals(lastname, other.lastname);
-	}
 
-	public Relator setRole(String code) {
-		Relator result = Relator.byCode(code);
-		if (result == null) {
-			result = Relator.AUTHOR;
-		}
-		this.relator = result;
-		return result;
-	}
+    private static final long serialVersionUID = 6663408501416574200L;
+
+    private String firstname;
+    private String lastname;
+    private Relator relator = Relator.AUTHOR;
+
+    public Author(final String singleName) {
+        this("", singleName);
+    }
 
 
-	public Relator getRelator() {
-		return relator;
-	}
+    public Author(final String firstname, final String lastname) {
+        this.firstname = firstname;
+        this.lastname = lastname;
+    }
+
+    public String getFirstname() {
+        return this.firstname;
+    }
+
+    public void setFirstname(final String firstname) {
+        this.firstname = firstname;
+    }
+
+    public String getLastname() {
+        return this.lastname;
+    }
+
+    public void setLastname(final String lastname) {
+        this.lastname = lastname;
+    }
+
+    public String toString() {
+        return this.lastname + ", " + this.firstname;
+    }
+
+    public int hashCode() {
+        return StringUtil.hashCode(this.firstname, this.lastname);
+    }
 
 
-	public void setRelator(Relator relator) {
-		this.relator = relator;
-	}
+    public boolean equals(final Object authorObject) {
+        if (!(authorObject instanceof Author)) {
+            return false;
+        }
+        final Author other = (Author) authorObject;
+        return StringUtil.equals(this.firstname, other.firstname)
+               && StringUtil.equals(this.lastname, other.lastname);
+    }
+
+    public Relator setRole(final String code) {
+        Relator result = Relator.byCode(code);
+        if (result == null) {
+            result = Relator.AUTHOR;
+        }
+        this.relator = result;
+        return result;
+    }
+
+
+    public Relator getRelator() {
+        return this.relator;
+    }
+
+
+    public void setRelator(final Relator relator) {
+        this.relator = relator;
+    }
 }
