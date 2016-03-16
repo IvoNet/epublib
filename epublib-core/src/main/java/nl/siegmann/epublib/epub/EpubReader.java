@@ -27,7 +27,6 @@ import java.util.zip.ZipInputStream;
  * Reads an epub file.
  *
  * @author paul
- *
  */
 public class EpubReader {
 
@@ -49,10 +48,9 @@ public class EpubReader {
     /**
      * Read epub from inputstream
      *
-     * @param in the inputstream from which to read the epub
+     * @param in       the inputstream from which to read the epub
      * @param encoding the encoding to use for the html files within the epub
      * @return the Book as read from the inputstream
-     * @throws IOException
      */
     public Book readEpub(final InputStream in, final String encoding) throws IOException {
         return readEpub(new ZipInputStream(in), encoding);
@@ -61,11 +59,10 @@ public class EpubReader {
     /**
      * Reads this EPUB without loading all resources into memory.
      *
-     * @param fileName the file to load
-     * @param encoding the encoding for XHTML files
+     * @param fileName        the file to load
+     * @param encoding        the encoding for XHTML files
      * @param lazyLoadedTypes a list of the MediaType to load lazily
      * @return this Book without loading all resources into memory.
-     * @throws IOException
      */
     Book readEpubLazy(final String fileName, final String encoding, final List<MediaType> lazyLoadedTypes)
             throws IOException {
@@ -87,9 +84,7 @@ public class EpubReader {
      *
      * @param fileName the file to load
      * @param encoding the encoding for XHTML files
-     *
      * @return this Book without loading all resources into memory.
-     * @throws IOException
      */
     public Book readEpubLazy(final String fileName, final String encoding) throws IOException {
         return readEpubLazy(fileName, encoding, Arrays.asList(MediatypeService.mediatypes));
@@ -115,7 +110,7 @@ public class EpubReader {
         return result;
     }
 
-    private Book postProcessBook(Book book) {
+    private Book postProcessBook(Book book) throws IOException {
         if (this.bookProcessor != null) {
             book = this.bookProcessor.processBook(book);
         }
@@ -127,12 +122,12 @@ public class EpubReader {
     }
 
     private Resource processPackageResource(final String packageResourceHref, final Book book,
-                                            final Resources resources) {
+                                            final Resources resources) throws IOException {
         final Resource packageResource = resources.remove(packageResourceHref);
         try {
             PackageDocumentReader.read(packageResource, this, book, resources);
         } catch (Exception e) {
-            log.error(e.getMessage(), e);
+            throw new IOException("Read error", e);
         }
         return packageResource;
     }
@@ -148,7 +143,9 @@ public class EpubReader {
         try {
             final Document document = ResourceUtil.getAsDocument(containerResource);
             final Element rootFileElement = (Element) ((Element) document.getDocumentElement()
-                    .getElementsByTagName("rootfiles").item(0)).getElementsByTagName("rootfile").item(0);
+                                                                         .getElementsByTagName("rootfiles")
+                                                                         .item(0)).getElementsByTagName("rootfile")
+                                                                                  .item(0);
             result = rootFileElement.getAttribute("full-path");
         } catch (Exception e) {
             log.error(e.getMessage(), e);

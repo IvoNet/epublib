@@ -4,6 +4,7 @@ import nl.siegmann.epublib.domain.Book;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -11,11 +12,9 @@ import java.util.List;
 /**
  * A book processor that combines several other bookprocessors
  *
- * Fixes coverpage/coverimage.
- * Cleans up the XHTML.
+ * Fixes coverpage/coverimage. Cleans up the XHTML.
  *
  * @author paul.siegmann
- *
  */
 public class BookProcessorPipeline implements BookProcessor {
 
@@ -32,7 +31,7 @@ public class BookProcessorPipeline implements BookProcessor {
 
 
     @Override
-    public Book processBook(Book book) {
+    public Book processBook(Book book) throws IOException {
         if (this.bookProcessors == null) {
             return book;
         }
@@ -41,6 +40,7 @@ public class BookProcessorPipeline implements BookProcessor {
                 book = bookProcessor.processBook(book);
             } catch (Exception e) {
                 this.log.error(e.getMessage(), e);
+                throw new IOException(e);
             }
         }
         return book;

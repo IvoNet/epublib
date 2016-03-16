@@ -14,7 +14,8 @@ public class EpubReaderTest extends TestCase {
         try {
             final Book book = new Book();
 
-            book.setCoverImage(new Resource(this.getClass().getResourceAsStream("/book1/cover.png"), "cover.png"));
+            book.setCoverImage(new Resource(this.getClass()
+                                                .getResourceAsStream("/book1/cover.png"), "cover.png"));
 
             final ByteArrayOutputStream out = new ByteArrayOutputStream();
             (new EpubWriter()).write(book, out);
@@ -33,9 +34,10 @@ public class EpubReaderTest extends TestCase {
         try {
             final Book book = new Book();
 
-            book.setCoverImage(new Resource(this.getClass().getResourceAsStream("/book1/cover.png"), "cover.png"));
+            book.setCoverImage(new Resource(this.getClass()
+                                                .getResourceAsStream("/book1/cover.png"), "cover.png"));
             book.addSection("Introduction", new Resource(this.getClass()
-                                                                 .getResourceAsStream("/book1/chapter1.html"),
+                                                             .getResourceAsStream("/book1/chapter1.html"),
                                                          "chapter1.html"));
             book.generateSpineFromTableOfContents();
 
@@ -44,8 +46,10 @@ public class EpubReaderTest extends TestCase {
             final byte[] epubData = out.toByteArray();
             final Book readBook = new EpubReader().readEpub(new ByteArrayInputStream(epubData));
             assertNotNull(readBook.getCoverPage());
-            assertEquals(1, readBook.getSpine().size());
-            assertEquals(1, readBook.getTableOfContents().size());
+            assertEquals(1, readBook.getSpine()
+                                    .size());
+            assertEquals(1, readBook.getTableOfContents()
+                                    .size());
         } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -57,9 +61,10 @@ public class EpubReaderTest extends TestCase {
         try {
             final Book book = new Book();
 
-            book.setCoverImage(new Resource(this.getClass().getResourceAsStream("/book1/cover.png"), "cover.png"));
+            book.setCoverImage(new Resource(this.getClass()
+                                                .getResourceAsStream("/book1/cover.png"), "cover.png"));
             book.addSection("Introduction", new Resource(this.getClass()
-                                                                 .getResourceAsStream("/book1/chapter1.html"),
+                                                             .getResourceAsStream("/book1/chapter1.html"),
                                                          "chapter1.html"));
             book.generateSpineFromTableOfContents();
 
@@ -68,11 +73,14 @@ public class EpubReaderTest extends TestCase {
             final byte[] epubData = out.toByteArray();
             final Book readBook = new EpubReader().readEpub(new ByteArrayInputStream(epubData));
             assertNotNull(readBook.getCoverPage());
-            assertEquals(1, readBook.getSpine().size());
-            assertEquals(1, readBook.getTableOfContents().size());
+            assertEquals(1, readBook.getSpine()
+                                    .size());
+            assertEquals(1, readBook.getTableOfContents()
+                                    .size());
             assertNotNull(readBook.getOpfResource());
             assertNotNull(readBook.getNcxResource());
-            assertEquals(MediatypeService.NCX, readBook.getNcxResource().getMediaType());
+            assertEquals(MediatypeService.NCX, readBook.getNcxResource()
+                                                       .getMediaType());
         } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

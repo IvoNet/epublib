@@ -88,8 +88,8 @@ class NCXDocument {
             final Document ncxDocument = ResourceUtil.getAsDocument(ncxResource);
             final Element navMapElement = DOMUtil
                     .getFirstElementByTagNameNS(ncxDocument.getDocumentElement(), NAMESPACE_NCX, NCXTags.navMap);
-            final TableOfContents tableOfContents = new TableOfContents(readTOCReferences(navMapElement
-                                                                                                  .getChildNodes(),
+            final NodeList childNodes = navMapElement.getChildNodes();
+            final TableOfContents tableOfContents = new TableOfContents(readTOCReferences(childNodes,
                                                                                           book));
             book.setTableOfContents(tableOfContents);
         } catch (Exception e) {

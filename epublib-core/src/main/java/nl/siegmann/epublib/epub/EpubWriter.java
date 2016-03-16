@@ -53,7 +53,7 @@ public class EpubWriter {
         resultStream.close();
     }
 
-    private Book processBook(Book book) {
+    private Book processBook(Book book) throws IOException {
         if (this.bookProcessor != null) {
             book = this.bookProcessor.processBook(book);
         }

@@ -2,6 +2,8 @@ package nl.siegmann.epublib.epub;
 
 import nl.siegmann.epublib.domain.Book;
 
+import java.io.IOException;
+
 /**
  * Post-processes a book.
  *
@@ -23,5 +25,5 @@ public interface BookProcessor {
         }
     };
 
-    Book processBook(Book book);
+    Book processBook(Book book) throws IOException;
 }

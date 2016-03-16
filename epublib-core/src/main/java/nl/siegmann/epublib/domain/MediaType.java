@@ -64,10 +64,7 @@ public class MediaType implements Serializable {
     }
 
     public boolean equals(final Object otherMediaType) {
-        if (!(otherMediaType instanceof MediaType)) {
-            return false;
-        }
-        return this.name.equals(((MediaType) otherMediaType).getName());
+        return (otherMediaType instanceof MediaType) && this.name.equals(((MediaType) otherMediaType).getName());
     }
 
     public String toString() {

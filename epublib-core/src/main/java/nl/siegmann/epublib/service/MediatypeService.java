@@ -13,7 +13,7 @@ import java.util.Map;
  * @author paul
  *
  */
-public class MediatypeService {
+public final class MediatypeService {
 
     public static final MediaType XHTML = new MediaType("application/xhtml+xml", ".xhtml", new String[]{".htm", ".html",
                                                                                                         ".xhtml"});
@@ -54,6 +54,9 @@ public class MediatypeService {
         for (final MediaType mediatype : mediatypes) {
             mediaTypesByName.put(mediatype.getName(), mediatype);
         }
+    }
+
+    private MediatypeService() {
     }
 
     public static boolean isBitmapImage(final MediaType mediaType) {

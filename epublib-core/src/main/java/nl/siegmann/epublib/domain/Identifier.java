@@ -103,7 +103,7 @@ public class Identifier implements Serializable {
      *
      * @return whether this is the unique book id.
      */
-    boolean isBookId() {
+    public boolean isBookId() {
         return this.bookId;
     }
 
